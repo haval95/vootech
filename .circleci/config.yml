@@ -1,27 +1,11 @@
-name: Node.js CI
-
-on:
-  push:
-    branches: [ dev ]
-  pull_request:
-    branches: [ dev ]
-
+version: 2.1
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 15.x]
-
+    docker:
+      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    - run: yarn run fix
-    # - run: "[[ -z $(git --no-pager diff -- . ':(exclude)yarn.lock' ':(exclude)yarn.lock') ]]"
-    - run: yarn run test --passWithNoTests
+      - checkout # check out the code in the project directory
+      - run: echo "hello world" # run the `echo` command
